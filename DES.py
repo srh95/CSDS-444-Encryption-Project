@@ -185,6 +185,7 @@ final_perm = [40, 8, 48, 16, 56, 24, 64, 32,
               34, 2, 42, 10, 50, 18, 58, 26,
               33, 1, 41, 9, 49, 17, 57, 25]
 
+
 # Performs encryption
 def encrypt(pt, rkb, rk):
     pt = hex2bin(pt)
@@ -290,18 +291,9 @@ def first_perm(key):
 
 
 # Helper method to convert hexadecimal to plain text
-def hex2text(text):
-    plain_text = bytes.fromhex(text).decode('utf-8')
-    # int_vals = str(int(text, 16))
-    # print("int vals: " + int_vals)
-    # while len(int_vals) > 0:
-    #     pair = int_vals[0:2]
-    #     print("pair: " + pair)
-    #     char_val = chr(int(pair))
-    #     print("char_val: " + char_val)
-    #     plain_text = plain_text + char_val
-    #     int_vals = int_vals[2:len(int_vals)+1]
-    return plain_text
+def hex2text(txt):
+    string_text = bytes.fromhex(txt).decode('utf-8')
+    return string_text
 
 
 # Helper method to convert plain text to hexadecimal
@@ -318,12 +310,12 @@ def text2hex(pt):
 
         converted_pt = converted_pt + str(first_hex) + str(second_hex)
 
-    print(converted_pt)
     return converted_pt
+
 
 def make_blocks(converted_pt):
     blocks = []
-    # if hexadecimal conversion of message is less than 16 characters, add spaces to the end
+    # if hexadecimal conversion of message is less than 16 characters, add spaces to the end to make it 16 characters
     if 16 >= len(converted_pt) > 0:
         while len(converted_pt) < 16:
             converted_pt = converted_pt + "20"
@@ -342,24 +334,23 @@ def make_blocks(converted_pt):
                 temp = temp + "20"
             blocks.append(temp)
 
-    print(blocks)
     return blocks
 
 
 # Encryption of plaintext
 plain_text = input("Enter a message to encrypt: ")
-converted_pt = text2hex(plain_text)
-blocks = make_blocks(converted_pt)
+hex_text = text2hex(plain_text)
+blocks = make_blocks(hex_text)
 
 print("Performing encryption...")
-key = "AABB09182736CCDD"
+key = "AABB09182736CCDD" # add key generation later
 [rkb, rk] = first_perm(key)
+
 # For printing entire cipher text
 cipher_text = ""
 # For saving each block of cipher text so they can be decrypted by block later
 cipher_text_blocks = []
 for block in blocks:
-    print("This is the block before encryption: " + block)
     cipher = bin2hex(encrypt(block, rkb, rk))
     cipher_text_blocks.append(cipher)
     cipher_text = cipher_text + cipher
@@ -371,7 +362,6 @@ rkb_rev = rkb[::-1]
 rk_rev = rk[::-1]
 text = ""
 for block in cipher_text_blocks:
-    print("This is the block before decryption: " + block)
     text = text + bin2hex(encrypt(block, rkb_rev, rk_rev))
 
 orig_text = hex2text(text)
