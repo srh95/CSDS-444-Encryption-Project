@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css'>
+  <script type="text/javascript" src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js'></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+  <link rel="stylesheet" type="text/css"
+    href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel='stylesheet' href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" />
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+</head>
+
+<body>
+  <!--<form class="container form-horizontal">-->
+  <h2 style="color: black; position: relative; left:15px"><b>RSA Encryption</b></h2>
+  <div class="col-md-12">
+    <!-- Key Generation panel -->
+    <div class="panel panel-primary">
+      <div class="panel-heading">Key Generation:</div>
+      <div class="panel-body">
+        <!-- Key Generation button -->
+        <div class="form-group row no-margin">
+          <div class="col-sm-8 col-sm-offset-4">
+            <a id="keyButton" class="form-control btn btn-info" href="{{ url_for('generate') }}">Generate New Keys</a>
+          </div>
+        </div>
+        <!-- Public key field -->
+        <div class="form-group row no-margin">
+          <label class="control-label col-sm-3" for="publicKey">Public Key:</label>
+          <div class="col-sm-8 col-sm-offset-1">
+            <input type="text" class="form-control" id="publicKey" placeholder="{{ publicKey }}" readonly>
+          </div>
+        </div>
+        <!-- Private key field -->
+        <div class="form-group row no-margin">
+          <label class="control-label col-sm-3" for="privateKey">Private Key:</label>
+          <div class="col-sm-8 col-sm-offset-1">
+            <input type="text" class="form-control" id="privateKey" placeholder="{{ privateKey }}" readonly>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Message encryption panel -->
+    <form action="{{ url_for('encryptmessage') }}" method="post">
+      <div class="panel panel-primary">
+        <div class="panel-heading">Message Encryption:</div>
+        <div class="panel-body">
+          <!-- Message textarea -->
+          <div class="form-group row-auto no-margin">
+            <label class="control-label col-auto" for="message">Message:</label>
+            <div class="">
+              <textarea style="resize: none;" class="md-textarea form-control" rows=5 name="message"
+                placeholder="Type message here"></textarea>
+            </div>
+          </div>
+          <!-- Encryption button -->
+          <div class="col-sm-12 col-sm-offset-0">
+            <input type="submit" id="encryptButton" class="form-control btn btn-info" value="Encrypt Message">
+          </div>
+          <!-- Encrypted message -->
+          <div class="form-group row-auto no-margin">
+            <label class="control-label col-auto" for="encryptedMessage">Encrypted Message:</label>
+            <div class="">
+              <textarea style="resize: none;" class="md-textarea form-control" rows=5 id="encryptedMessage"
+                placeholder="{{ encrypted }}" readonly></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+    <!-- Message decryption panel -->
+    <form action="{{ url_for('decryptmessage') }}" method="post">
+      <div class="panel panel-primary">
+        <div class="panel-heading">Message Decryption:</div>
+        <div class="panel-body">
+          <!-- Decryption button -->
+          <div class="col-sm-12 col-sm-offset-0">
+            <input type="submit" id="decryptButton" class="form-control btn btn-info" value="Decrypt Message">
+          </div>
+          <!-- Encrypted message -->
+          <div class="form-group row-auto no-margin">
+            <label class="control-label col-auto" for="decryptedMessage">Decrypted Message:</label>
+            <div class="">
+              <textarea style="resize: none;" class="md-textarea form-control" rows=5 id="decryptedMessage"
+                placeholder="{{ decrypted }}" readonly></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</body>
