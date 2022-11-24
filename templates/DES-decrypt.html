@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang=”en”>
+  <head>
+    <meta charset=”UTF-8">
+    <title>DES Deryption</title>
+  </head>
+  <body>
+  {% block content %}
+  <button type="button" onclick="window.location.href='{{ url_for( 'encrypt_des' ) }}';">back</button>
+      <form method="post">
+          <h2> Encrypted message: {{cipher_text}} </h2>
+          <br>
+          <button type="submit" id="decrypt" name="Decrypt" value="Decrypt">Decrypt</button>
+      </form>
+
+    {% if decrypted %}
+        <h2> Decrypting your cipher text... </h2>
+        <label> Original message: {{orig_text}} </label>
+    {% endif %}
+  {% endblock %}
+
+
+  </body>
+</html>

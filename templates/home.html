@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home page</title>
+</head>
+<body>
+{% block content %}
+      <form method="post">
+          <button type="button" onclick="window.location.href='{{ url_for( 'encrypt_des' ) }}';">DES</button>
+          <button type="button">MD5</button>
+          <button type="button">RSA</button>
+          <button type="button">Vigenere Cipher</button>
+      </form>
+  {% endblock %}
+</body>
+</html>
