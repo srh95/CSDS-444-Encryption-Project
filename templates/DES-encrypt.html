@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang=”en”>
+  <head>
+    <meta charset=”UTF-8">
+    <title>DES Encryption</title>
+  </head>
+  <body>
+  {% block content %}
+  <button type="button" onclick="window.location.href='{{ url_for( 'home' ) }}';">back</button>
+      <form method="post">
+      <label>Enter the message you wish to encrypt: </label>
+      <br>
+        <textarea name="message"
+                  placeholder="Message content"
+                  rows="15"
+                  cols="60"
+                  >{{ request.form['message'] }}</textarea>
+        <br>
+        <button type="submit" id="encrypt" name="Encrypt" value="Encrypt">Encrypt</button>
+      </form>
+  {% endblock %}
+
+
+  </body>
+</html>
