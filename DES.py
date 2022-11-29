@@ -1,3 +1,5 @@
+import random
+
 # Helper method to convert hexadecimal to binary
 def hex2bin(s):
     mp = {'0': "0000",
@@ -192,7 +194,7 @@ def encrypt(pt, rkb, rk, block_num):
 
     # Initial Permutation
     pt = permute(pt, initial_perm, 64)
-    print("After initial permutation for block ", block_num, ": ", bin2hex(pt))
+    #print("After initial permutation for block ", block_num, ": ", bin2hex(pt))
 
     # Splitting
     left = pt[0:32]
@@ -223,8 +225,8 @@ def encrypt(pt, rkb, rk, block_num):
         # Swapper
         if (i != 15):
             left, right = right, left
-        print("Round ", i + 1, " ", bin2hex(left),
-              " ", bin2hex(right), " ", rk[i])
+        #print("Round ", i + 1, " ", bin2hex(left),
+              #" ", bin2hex(right), " ", rk[i])
 
     # Combination
     combine = left + right
@@ -232,6 +234,15 @@ def encrypt(pt, rkb, rk, block_num):
     # Final permutation: final rearranging of bits to get cipher text
     cipher_text = permute(combine, final_perm, 64)
     return cipher_text
+
+def rand_key(n):
+    key = ""
+    for i in range(n):
+        temp = str(random.randint(0, 1))
+        key += temp
+
+    return key
+
 
 # Generates the first round keys
 def first_perm(key):
@@ -337,32 +348,3 @@ def make_blocks(converted_pt):
     return blocks
 
 
-# Encryption of plaintext
-# plain_text = input("Enter a message to encrypt: ")
-# hex_text = text2hex(plain_text)
-# blocks = make_blocks(hex_text)
-#
-# print("Performing encryption...")
-# key = "AABB09182736CCDD" # add key generation later
-# [rkb, rk] = first_perm(key)
-#
-# # For printing entire cipher text
-# cipher_text = ""
-# # For saving each block of cipher text so they can be decrypted by block later
-# cipher_text_blocks = []
-# for block in blocks:
-#     cipher = bin2hex(encrypt(block, rkb, rk))
-#     cipher_text_blocks.append(cipher)
-#     cipher_text = cipher_text + cipher
-#
-# print("Cipher Text : ", cipher_text)
-#
-# print("Decryption")
-# rkb_rev = rkb[::-1]
-# rk_rev = rk[::-1]
-# text = ""
-# for block in cipher_text_blocks:
-#     text = text + bin2hex(encrypt(block, rkb_rev, rk_rev))
-#
-# orig_text = hex2text(text)
-# print("Plain Text : ", orig_text)
