@@ -36,12 +36,8 @@ def encrypt_des():
             hex_text = DES.text2hex(plain_text)
             blocks = DES.make_blocks(hex_text)
 
-            # print this to the page
-            print("Performing encryption...")
-            key = "AABB09182736CCDD"  # add key generation later
+            key = DES.bin2hex(DES.rand_key(64))
             [rkb, rk] = DES.first_perm(key)
-            # # For printing entire cipher text
-            # # For saving each block of cipher text so they can be decrypted by block later
             cipher_text_blocks = []
             block_num = 0
             for block in blocks:
@@ -49,7 +45,6 @@ def encrypt_des():
                 cipher = DES.bin2hex(DES.encrypt(block, rkb, rk, block_num))
                 cipher_text_blocks.append(cipher)
                 cipher_text = cipher_text + cipher
-                # Send cipher text to the html and print it there when the button is clicked to encrypt
         return redirect(url_for('decrypt_des'))
 
     return render_template('DES-encrypt.html')
