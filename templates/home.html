@@ -1,16 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <style>
+    .buttnStyle {
+    border: none;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    position: fixed;
+    left: 500px;
+}
+
+#DES{
+position: absolute;
+left: 360px;
+top:400px;
+background: #383838;
+border-radius: 4px;
+font-size:20px;
+color: white;
+
+}
+#DES:hover{
+    background: #000;
+}
+
+#RSA{
+    position: absolute;
+    left: 480px;
+    top:400px;
+    background: #383838;
+    border-radius: 4px;
+    font-size:20px;
+    color: white;
+
+}
+
+#RSA:hover{
+    background: #000;
+}
+
+#MD5{
+    position: absolute;
+    left: 600px;
+    top:400px;
+    background: #383838;
+    border-radius: 4px;
+    font-size:20px;
+    color: white;
+
+}
+
+#MD5:hover{
+    background: #000;
+}
+
+#VC{
+    position: absolute;
+    left: 825px;
+    top:400px;
+    background: #383838;
+    border-radius: 4px;
+    font-size:20px;
+    color: white;
+
+}
+
+#VC:hover{
+    background: #000;
+}
+
+    </style>
     <meta charset="UTF-8">
     <title>Home page</title>
 </head>
 <body>
 {% block content %}
       <form method="post">
-          <button type="button" onclick="window.location.href='{{ url_for( 'encrypt_des' ) }}';">DES</button>
-          <button type="button">MD5</button>
-          <button type="button">RSA</button>
-          <button type="button">Vigenere Cipher</button>
+          <button id="DES" type="button" class="buttnStyle" onclick="window.location.href='{{ url_for( 'encrypt_des' ) }}';">DES</button>
+          <button id = "RSA" type="button" class="buttnStyle" >RSA</button>
+          <button id="MD5" type="button" class="buttnStyle" onclick="window.location.href='{{ url_for( 'encrypt_md5' ) }}';">MD5 Checksum</button>
+          <button id = "VC" type="button" class="buttnStyle" >Vigenere Cipher</button>
       </form>
   {% endblock %}
 </body>

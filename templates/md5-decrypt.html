@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang=”en”>
+  <head>
+     <style>
+    .boxed {
+   width: 300px;
+   height: 100px;
+  border: 1px solid black;
+  display: inline-block;
+  text-align: center;
+  margin-left: 110px;
+  margin-top: 10px;
+  word-wrap: break-word;
+}
+
+    .decryptButtnStyle{
+    border: none;
+    padding: 10px 20px;
+    display: inline-block;
+    text-align: center;
+    font-size: 12px;
+    left: 100px;
+    top: 700px;
+    }
+
+      </style>
+    <meta charset=”UTF-8">
+    <title>MD5 Verification</title>
+  </head>
+  <body>
+  {% block content %}
+  <button type="button" onclick="window.location.href='{{ url_for( 'encrypt_md5' ) }}';">back</button>
+  <h1>MD5 Message Verification</h1>
+  <form method="post">
+          <br>
+      <label> To simulate receiving a message and checking that the message is authentic, enter the "received message": </label>
+    <br>
+        <textarea name="message"
+                  placeholder="Message content"
+                  rows="15"
+                  cols="60"
+                  required
+                  >{{ request.form['message'] }}</textarea>
+        <button class="decryptButtnStyle" type="submit" id="encrypt" name="Encrypt" value="Encrypt">VERIFY</button>
+  </form>
+
+  {% if verify %}
+  <h2> Digital signature for sent message: </h2>
+  <div class="boxed">
+       <label>{{digital_signature}} </label>
+    </div>
+  <h2> Digital signature for received message: </h2>
+  <div class="boxed">
+       <label>{{digital_signature2}} </label>
+    </div>
+  {% if digital_signature == digital_signature2 %}
+    <h2> The digital signatures match. The message is authentic. </h2>
+  {% else %}
+    <h2> The digital signatures do not match. The message is not authentic. </h2>
+
+  {% endif %}
+  {% endif %}
+  {% endblock %}
+
+
+  </body>
+</html>
