@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html lang=”en”>
   <head>
-      <style>
-
+       <style>
 .textboxStyle {
     left: 500px;
     }
@@ -15,16 +14,17 @@
     left: 100px;
     top: 600px;
     }
+
       </style>
     <meta charset=”UTF-8">
-    <title>DES Encryption</title>
+    <title>MD5 Message Verification</title>
   </head>
   <body>
   {% block content %}
   <button type="button" onclick="window.location.href='{{ url_for( 'home' ) }}';">back</button>
-  <h1> DES Encryption </h1>
+  <h1>MD5 Verification</h1>
       <form method="post">
-      <label class="textboxStyle"> Enter the message you want to encrypt: </label>
+      <label>Enter the message you want to send: </label>
       <br>
         <textarea class="textboxStyle" name="message"
                   placeholder="Message content"
@@ -33,10 +33,9 @@
                   required
                   >{{ request.form['message'] }}</textarea>
         <br>
-        <button class="encryptButtnStyle" type="submit" id="encrypt" name="Encrypt" value="Encrypt">ENCRYPT</button>
+        <button class="encryptButtnStyle" type="submit" id="encrypt" name="Encrypt" value="Encrypt">SEND</button>
       </form>
   {% endblock %}
-
 
 
   </body>

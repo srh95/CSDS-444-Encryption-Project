@@ -56,9 +56,8 @@ def md5_to_hex(digest):
     return '{:032x}'.format(int.from_bytes(raw, byteorder='big'))
 
 
-if __name__ == '__main__':
-    demo = [b"", b"a", b"abc", b"message digest", b"abcdefghijklmnopqrstuvwxyz",
-            b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",
-            b"12345678901234567890123456789012345678901234567890123456789012345678901234567890"]
-    for message in demo:
-        print(md5_to_hex(md5(message)), ' <= "', message.decode('ascii'), '"', sep='')
+# if __name__ == '__main__':
+#     demo = "testing encryption with md5"
+#     message = bytes(demo, 'utf-8')
+#
+#     print(md5_to_hex(md5(message)), ' <= "', message.decode('ascii'), '"', sep='')

@@ -1,14 +1,19 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
-import DES
+import DES, md5
 
 app = Flask(__name__)
 
+# DES global variables
 cipher_text = ""
 cipher_text_blocks = []
 rk = []
 rkb = []
 
-# home-page
+# MD5 global variables
+digital_signature = ""
+plain_text = ""
+
+# Home page
 @app.route('/')
 def home():
     return render_template('home.html')
@@ -73,6 +78,49 @@ def decrypt_des():
         orig_text = DES.hex2text(text)
 
     return render_template('DES-decrypt.html', cipher_text = cipher_text, orig_text = orig_text, decrypted = decrypted)
+
+# MD5 Encryption page
+@app.route('/md5-encrypt', methods=('GET', 'POST'))
+def encrypt_md5():
+    global digital_signature
+    global plain_text
+    # Get plain text from the box
+    if request.method == 'POST':
+        plain_text = request.form['message']
+        if not plain_text:
+            flash('Type a message to encrypt')
+        else:
+            pt = bytes(plain_text, 'utf-8')
+            digital_signature = md5.md5_to_hex(md5.md5(pt))
+
+        return redirect(url_for('decrypt_md5'))
+
+    return render_template('md5-encrypt.html')
+
+
+# MD5 Decryption page
+@app.route('/md5-decrypt', methods=('GET', 'POST'))
+def decrypt_md5():
+    global digital_signature
+    global plain_text
+    verify = False
+
+    digital_signature2 = digital_signature
+    # Get plain text from the box
+    if request.method == 'POST':
+        verify = True
+        plain_text2 = request.form['message']
+        if not plain_text2:
+            flash('Type a message to encrypt')
+        else:
+            pt = bytes(plain_text2, 'utf-8')
+            digital_signature2 = md5.md5_to_hex(md5.md5(pt))
+
+
+    return render_template('md5-decrypt.html', digital_signature = digital_signature, digital_signature2 = digital_signature2, plain_text = plain_text, verify = verify )
+
+
+
 
 if __name__ == '__main__':
    app.run()
