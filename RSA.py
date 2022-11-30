@@ -144,15 +144,3 @@ def decrypt(pk, ciphertext):
     plain = [chr((char ** key) % n) for char in ciphertext]
     #Return the array of bytes as a string
     return ''.join(plain)
-
-# Driver code to test
-if __name__ == '__main__':
-    public, private = generate_keypair(generate_prime(), generate_prime())
-    print("Your public key is ", public ," and your private key is ", private)
-    message = input("Enter a message to encrypt with your private key: ")
-    encrypted_msg = encrypt(private, message)
-    print("Your encrypted message is: ")
-    print(''.join(map(lambda x: str(x), encrypted_msg)))
-    print("Decrypting message with public key ", public ,"...")
-    print("Your message is:")
-    print(decrypt(public, encrypted_msg))
