@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
-import DES, md5
+import DES, md5, vigenereCipher
 from RSA import *
+
 
 app = Flask(__name__)
 
@@ -18,6 +19,9 @@ plain_text = ""
 public, private = generate_keypair(generate_prime(), generate_prime())
 encryptionRedirected = False
 decryptionRedirected = False
+
+# Vigenere Cipher global variables
+messages = []
 
 # Home page
 @app.route('/')
@@ -165,6 +169,31 @@ def decryptmessage():
     decrypted = decrypt(public, encrypted)
     decryptionRedirected = True
     return redirect(url_for("rsa"))
+
+@app.route('/vigenereCipher', methods = ["GET", "POST"])
+def vc_encrypt():
+    encryptedMessage = ""
+    currentKey = ""
+    if request.method == "POST":
+        message = request.form.get("message")
+        messages.append(message)
+        keyword = request.form.get("keyword")
+        currentKey = vigenereCipher.createKey(message, keyword)
+        encryptedMessage = vigenereCipher.encrypt(message, currentKey)
+      #  return vigenereCipher.encrypt(message, vigenereCipher.createKey(message, keyword))
+    return render_template('vigCipherEncrypt.html', msg=encryptedMessage, key=currentKey)
+
+@app.route('/vigenereCipherDecrypt', methods = ["GET", "POST"])
+def vc_decrypt():
+    decryptedMessage = ""
+    key = ""
+    if request.method == "POST":
+        encryptedMessage = request.form.get("message")
+        originalMessage = messages[-1]
+        keyword = request.form.get("keyword")
+        key =  vigenereCipher.createKey(originalMessage, keyword)
+        decryptedMessage = vigenereCipher.decrypt(encryptedMessage, key)
+    return render_template('vigCipherDecrypt.html', decryptMsg=decryptedMessage)
 
 
 if __name__ == '__main__':

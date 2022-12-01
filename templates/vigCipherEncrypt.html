@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vigenere Cipher</title>
+</head>
+<body>
+    <h1>Vigenere Cipher - Encryption</h1>
+    <form action="{{ url_for('vc_encrypt')}}" method="post">
+        <label for="message">Message to Encrypt:</label>
+        <input type="text" id="message" name="message" placeholder="message" value="{{message}}"> <br>
+        <label for="keyword">Key Word:</label>
+        <input type="text" id="keyword" name="keyword" placeholder="keyword"> <br>
+        <button type="submit">Encrypt</button>
+    </form>
+    <br>
+        <h3>Encrypted Message: </h3>
+        <h4>{{msg}}</h4>
+        <h3>Key: </h3>
+        <h4>{{key}}</h4>
+        <a href="{{url_for('vc_decrypt')}}" >
+            <button>Decrypt</button>
+        </a>
+    <br>
+
+</body>
+</html>

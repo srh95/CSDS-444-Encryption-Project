@@ -82,7 +82,7 @@ color: white;
           <button id="DES" type="button" class="buttnStyle" onclick="window.location.href='{{ url_for( 'encrypt_des' ) }}';">DES</button>
           <button id = "RSA" type="button" class="buttnStyle" onclick="window.location.href='{{ url_for( 'rsa' )}}';">RSA</button>
           <button id="MD5" type="button" class="buttnStyle" onclick="window.location.href='{{ url_for( 'encrypt_md5' ) }}';">MD5 Checksum</button>
-          <button id = "VC" type="button" class="buttnStyle" >Vigenere Cipher</button>
+          <button id = "VC" type="button" class="buttnStyle" onclick="window.location.href='{{ url_for( 'vc_encrypt' ) }}';">Vigenere Cipher</button>
       </form>
   {% endblock %}
 </body>
