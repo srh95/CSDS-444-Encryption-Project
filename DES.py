@@ -1,5 +1,30 @@
 import random
 
+# Helper method to convert binary to decimal
+def bin2dec(binary):
+    decimal = 0
+    i = 0
+    n = 0
+    while binary != 0:
+        dec = binary % 10
+        decimal = decimal + dec * pow(2, i)
+        binary = binary // 10
+        i += 1
+    return decimal
+
+
+# Helper method to convert decimal to binary
+def dec2bin(num):
+    res = bin(num).replace("0b", "")
+    if (len(res) % 4 != 0):
+        div = len(res) / 4
+        div = int(div)
+        counter = (4 * (div + 1)) - len(res)
+        for i in range(0, counter):
+            res = '0' + res
+    return res
+
+
 # Helper method to convert hexadecimal to binary
 def hex2bin(s):
     mp = {'0': "0000",
@@ -54,41 +79,19 @@ def bin2hex(s):
     return hex
 
 
-# Helper method to convert binary to decimal
-def bin2dec(binary):
-    decimal, i, n = 0, 0, 0
-    while binary != 0:
-        dec = binary % 10
-        decimal = decimal + dec * pow(2, i)
-        binary = binary // 10
-        i += 1
-    return decimal
-
-
-# Helper method to convert decimal to binary
-def dec2bin(num):
-    res = bin(num).replace("0b", "")
-    if (len(res) % 4 != 0):
-        div = len(res) / 4
-        div = int(div)
-        counter = (4 * (div + 1)) - len(res)
-        for i in range(0, counter):
-            res = '0' + res
-    return res
-
-
 # Permute function to rearrange the bits
-def permute(k, arr, n):
+# Takes an input array, a permutation box, and the number of bits to compress or expand to
+def permute(k, arr, numBits):
     permutation = ""
-    for i in range(0, n):
+    for i in range(0, numBits):
         permutation = permutation + k[arr[i] - 1]
     return permutation
 
 
-# shifting the bits towards left by nth shifts
-def shift_left(k, nth_shifts):
+# Helper method to shift the bits left by nth shifts
+def shift_left(k, num_shifts):
     s = ""
-    for i in range(nth_shifts):
+    for i in range(num_shifts):
         for j in range(1, len(k)):
             s = s + k[j]
         s = s + k[0]
@@ -97,16 +100,17 @@ def shift_left(k, nth_shifts):
     return k
 
 
-# calculating xor of two strings of binary number a and b
-def xor(a, b):
-    ans = ""
-    for i in range(len(a)):
-        if a[i] == b[i]:
-            ans = ans + "0"
+# Helper method to calculate the xor of two strings of binary number a and b
+def xor(num1, num2):
+    result = ""
+    for i in range(len(num1)):
+        if num1[i] != num2[i]:
+            result = result + "1"
         else:
-            ans = ans + "1"
-    return ans
+            result = result + "0"
+    return result
 
+# The following tables are used in the encryption function 
 
 # Initial Permutation Table
 initial_perm = [58, 50, 42, 34, 26, 18, 10, 2,
@@ -189,23 +193,26 @@ final_perm = [40, 8, 48, 16, 56, 24, 64, 32,
 
 
 # Performs encryption
-def encrypt(pt, rkb):
+def encrypt(pt, key):
+    # convert plaintext to binary
     pt = hex2bin(pt)
 
     # perform initial Permutation
-    pt = permute(pt, initial_perm, 64)
+    initial_pt = permute(pt, initial_perm, 64)
 
-    # Splitting
-    left = pt[0:32]
-    right = pt[32:64]
+    # Splitting the permuted plaintext into two halves
+    left = initial_pt[0:32]
+    right = initial_pt[32:64]
+
+    # Loop for 16 rounds of encryption
     for i in range(0, 16):
-        #  Expansion D-box: Expanding the 32 bits data into 48 bits
+        #  Expansion permutation: expanding the 32 bits RPT into 48 bits RPT
         right_expanded = permute(right, exp_d, 48)
 
-        # XOR RoundKey[i] and right_expanded
-        xor_x = xor(right_expanded, rkb[i])
+        # Perform XOR with RPT and round key
+        xor_x = xor(right_expanded, key[i])
 
-        # S-boxex: substituting the value from s-box table by calculating row and column
+        # S-box permutation: substitute the value from s-box table by calculating row and column
         sbox_str = ""
         for j in range(0, 8):
             row = bin2dec(int(xor_x[j * 6] + xor_x[j * 6 + 5]))
@@ -221,14 +228,14 @@ def encrypt(pt, rkb):
         result = xor(left, sbox_str)
         left = result
 
-        # Swapper
-        if i != 15:
+        # If it's not the last round swap the RPT and LPT
+        if i < 15:
             left, right = right, left
 
-    # Combination
+    # Combine LPT and RPT on the last round
     combine = left + right
 
-    # Final permutation: final rearranging of bits to get cipher text
+    # Final permutation: inverse of initial permutation
     cipher_text = permute(combine, final_perm, 64)
     return cipher_text
 
@@ -242,59 +249,40 @@ def rand_key(n):
     return key
 
 
-# Generates the first round keys
+# Function generates the encryption round keys
 def first_perm(key):
-    # convert key from hex to binary
-    key = hex2bin(key)
+    # parity bit drop table for key
+    pc_table = [57, 49, 41, 33, 25, 17, 9, 1, 58, 50, 42, 34, 26, 18, 10, 2, 59, 51, 43, 35, 27, 19, 11, 3, 60, 52, 44, 36, 63, 55, 47, 39, 31, 23, 15, 7, 62, 54, 46, 38, 30, 22, 14, 6, 61, 53, 45, 37, 29, 21, 13, 5, 28, 20, 12, 4]
 
-    # parity bit drop table
-    keyp = [57, 49, 41, 33, 25, 17, 9,
-            1, 58, 50, 42, 34, 26, 18,
-            10, 2, 59, 51, 43, 35, 27,
-            19, 11, 3, 60, 52, 44, 36,
-            63, 55, 47, 39, 31, 23, 15,
-            7, 62, 54, 46, 38, 30, 22,
-            14, 6, 61, 53, 45, 37, 29,
-            21, 13, 5, 28, 20, 12, 4]
-
-    # perform permutation to get 56 bit key from 64 bit key
-    key = permute(key, keyp, 56)
-
-    # Number of bit shifts
-    shift_table = [1, 1, 2, 2,
-                   2, 2, 2, 2,
-                   1, 2, 2, 2,
-                   2, 2, 2, 1]
+    # Table for bit shifts
+    shift_table = [1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1]
 
     # Key- Compression Table : Compression of key from 56 bits to 48 bits
-    key_comp = [14, 17, 11, 24, 1, 5,
-                3, 28, 15, 6, 21, 10,
-                23, 19, 12, 4, 26, 8,
-                16, 7, 27, 20, 13, 2,
-                41, 52, 31, 37, 47, 55,
-                30, 40, 51, 45, 33, 48,
-                44, 49, 39, 56, 34, 53,
-                46, 42, 50, 36, 29, 32]
+    comp_table = [14, 17, 11, 24, 1, 5, 3, 28, 15, 6, 21, 10, 23, 19, 12, 4, 26, 8, 16, 7, 27, 20, 13, 2, 41, 52, 31, 37, 47, 55, 30, 40, 51, 45, 33, 48, 44, 49, 39, 56, 34, 53, 46, 42, 50, 36, 29, 32]
 
-    # Splitting
-    left = key[0:28]  # rkb for RoundKeys in binary
-    right = key[28:56]  # rk for RoundKeys in hexadecimal
+    # convert key from hexadecimal to binary
+    key = hex2bin(key)
 
-    rkb = []
+    # perform permutation compress 64 bit key into 56 bits
+    key = permute(key, pc_table, 56)
+
+    # splitting the key
+    left_key = key[0:28]
+    right_key = key[28:56]
+
+    rk = []
+    # loop to create new key for each round
     for i in range(0, 16):
-        # Shifting the bits by nth shifts by checking from shift table
-        left = shift_left(left, shift_table[i])
-        right = shift_left(right, shift_table[i])
-
-        # Combination of left and right string
+        # Use shift table to shift bits
+        left = shift_left(left_key, shift_table[i])
+        right = shift_left(right_key, shift_table[i])
+        # combine left and right
         combine_str = left + right
-
         # Compression of key from 56 to 48 bits
-        round_key = permute(combine_str, key_comp, 48)
+        round_key = permute(combine_str, comp_table, 48)
+        rk.append(round_key)
 
-        rkb.append(round_key)
-
-    return rkb
+    return rk
 
 
 # Helper method to convert hexadecimal to plain text
@@ -319,7 +307,7 @@ def text2hex(pt):
 
     return converted_pt
 
-
+# Function to create blocks of plaintext
 def make_blocks(converted_pt):
     blocks = []
     # if hexadecimal conversion of message is less than 16 characters, add spaces to the end to make it 16 characters
