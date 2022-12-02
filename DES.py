@@ -108,7 +108,7 @@ def xor(a, b):
     return ans
 
 
-# Table of Position of 64 bits at initial level: Initial Permutation Table
+# Initial Permutation Table
 initial_perm = [58, 50, 42, 34, 26, 18, 10, 2,
                 60, 52, 44, 36, 28, 20, 12, 4,
                 62, 54, 46, 38, 30, 22, 14, 6,
@@ -189,12 +189,11 @@ final_perm = [40, 8, 48, 16, 56, 24, 64, 32,
 
 
 # Performs encryption
-def encrypt(pt, rkb, rk, block_num):
+def encrypt(pt, rkb):
     pt = hex2bin(pt)
 
-    # Initial Permutation
+    # perform initial Permutation
     pt = permute(pt, initial_perm, 64)
-    #print("After initial permutation for block ", block_num, ": ", bin2hex(pt))
 
     # Splitting
     left = pt[0:32]
@@ -223,10 +222,8 @@ def encrypt(pt, rkb, rk, block_num):
         left = result
 
         # Swapper
-        if (i != 15):
+        if i != 15:
             left, right = right, left
-        #print("Round ", i + 1, " ", bin2hex(left),
-              #" ", bin2hex(right), " ", rk[i])
 
     # Combination
     combine = left + right
@@ -235,6 +232,7 @@ def encrypt(pt, rkb, rk, block_num):
     cipher_text = permute(combine, final_perm, 64)
     return cipher_text
 
+# Generates a random binary key
 def rand_key(n):
     key = ""
     for i in range(n):
@@ -283,7 +281,6 @@ def first_perm(key):
     right = key[28:56]  # rk for RoundKeys in hexadecimal
 
     rkb = []
-    rk = []
     for i in range(0, 16):
         # Shifting the bits by nth shifts by checking from shift table
         left = shift_left(left, shift_table[i])
@@ -296,9 +293,8 @@ def first_perm(key):
         round_key = permute(combine_str, key_comp, 48)
 
         rkb.append(round_key)
-        rk.append(bin2hex(round_key))
 
-    return rkb, rk
+    return rkb
 
 
 # Helper method to convert hexadecimal to plain text

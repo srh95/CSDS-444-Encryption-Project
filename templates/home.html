@@ -72,11 +72,14 @@ color: white;
     background: #000;
 }
 
+h1 {text-align: center; position: relative;}
+
     </style>
     <meta charset="UTF-8">
     <title>Home page</title>
 </head>
 <body>
+<h1> Select an encryption method </h1>
 {% block content %}
       <form method="post">
           <button id="DES" type="button" class="buttnStyle" onclick="window.location.href='{{ url_for( 'encrypt_des' ) }}';">DES</button>
