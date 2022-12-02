@@ -25,6 +25,13 @@
     left: 100px;
     top: 600px;
     }
+
+    .keyButton {
+  background-color: #cfc ;
+  padding: 10px 20px
+  border: none ;
+}
+
       </style>
     <meta charset=”UTF-8">
     <title>DES Encryption</title>
@@ -34,11 +41,12 @@
   <button type="button" onclick="window.location.href='{{ url_for( 'home' ) }}';">back</button>
 
   <h1> DES Encryption </h1>
-      <h3> Secret Key: </h3>
+      <form method="post">
+          <h3> Secret Key: </h3>
   <div class="boxed">
        <label>{{key}} </label>
     </div>
-      <form method="post">
+          <button class="encryptButtnStyle" type="button" onclick="window.location.href='{{ url_for( 'des_generate' ) }}';">New Key</button>
           <br>
       <label class="textboxStyle"> Enter the message you want to encrypt: </label>
       <br>
