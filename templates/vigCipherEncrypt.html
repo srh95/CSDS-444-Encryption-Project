@@ -6,6 +6,7 @@
     <title>Vigenere Cipher</title>
 </head>
 <body>
+<button type="button" onclick="window.location.href='{{ url_for( 'home' ) }}';">back</button>
     <h1>Vigenere Cipher - Encryption</h1>
     <form action="{{ url_for('vc_encrypt')}}" method="post">
         <label for="message">Message to Encrypt:</label>
@@ -22,7 +23,7 @@
         <a href="{{url_for('vc_decrypt')}}" >
             <button>Decrypt</button>
         </a>
-    <br>
+
 
 </body>
 </html>

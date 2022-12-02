@@ -31,6 +31,13 @@
   <button type="button" onclick="window.location.href='{{ url_for( 'encrypt_des' ) }}';">back</button>
   <h1>DES Decryption</h1>
       <form method="post">
+           <h3> Secret Key: </h3>
+            <textarea class="textboxStyle" name="key"
+                  placeholder="Enter the secret key"
+                  rows="7"
+                  cols="50"
+                  required
+                  >{{ request.form['key'] }}</textarea>
           <h2> Encrypted message: </h2>
           <div class="boxed">
             <label> {{cipher_text}} </label>
@@ -39,7 +46,7 @@
       </form>
 
     {% if decrypted %}
-        <h2> Decrypted cipher text: </h2>
+        <h2> Decrypted message: </h2>
   <div class="boxed">
         <label> {{orig_text}} </label>
   </div>

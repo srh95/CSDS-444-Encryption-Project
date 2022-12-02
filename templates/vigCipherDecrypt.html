@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <title>Vigenere Cipher</title>
 </head>
-<body> 
+<body>
+<button type="button" onclick="window.location.href='{{ url_for( 'vc_encrypt' ) }}';">back</button>
     <h1>Vigenere Cipher - Decryption</h1>
     <form action="{{ url_for('vc_decrypt')}}" method="post">
         <label for="message">Encrypted Message: </label>

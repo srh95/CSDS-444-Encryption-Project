@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 import DES, md5, vigenereCipher
 from RSA import *
+import time
 
 
 app = Flask(__name__)
@@ -34,53 +35,68 @@ def home():
 def encrypt_des():
     global cipher_text
     global cipher_text_blocks
-    global rk
     global rkb
-    # Get plain text from the box
+
+    # generate secret key
+    key = DES.bin2hex(DES.rand_key(64))
+    print(key)
+
+    # Get plain text from the text box
     if request.method == 'POST':
         cipher_text = ""
         plain_text = request.form['message']
-        if not plain_text:
-            flash('Type a message to encrypt')
-        else:
-            hex_text = DES.text2hex(plain_text)
-            blocks = DES.make_blocks(hex_text)
+        # start timer
+        tic = time.perf_counter()
 
-            key = DES.bin2hex(DES.rand_key(64))
-            [rkb, rk] = DES.first_perm(key)
-            cipher_text_blocks = []
-            block_num = 0
-            for block in blocks:
-                block_num = block_num + 1
-                cipher = DES.bin2hex(DES.encrypt(block, rkb, rk, block_num))
-                cipher_text_blocks.append(cipher)
-                cipher_text = cipher_text + cipher
+        hex_text = DES.text2hex(plain_text)
+        blocks = DES.make_blocks(hex_text)
+
+        rkb = DES.first_perm(key)
+        print(type(rkb))
+        print(rkb)
+        cipher_text_blocks = []
+        for block in blocks:
+            cipher = DES.bin2hex(DES.encrypt(block, rkb))
+            cipher_text_blocks.append(cipher)
+            cipher_text = cipher_text + cipher
+
+        # end timer
+        toc = time.perf_counter()
+        print(f"Encrypted the message in {toc - tic:0.4f} seconds")
+
         return redirect(url_for('decrypt_des'))
 
-    return render_template('DES-encrypt.html')
+    return render_template('DES-encrypt.html', key = key)
 
 
-# DES Encryption page
+# DES Decryption page
 @app.route('/des-decrypt', methods=('GET', 'POST'))
 def decrypt_des():
     global cipher_text
     global cipher_text_blocks
     global rkb
-    global rk
     decrypted = False
     orig_text = ""
 
     if request.method == 'POST':
+        key = request.form['key']
+        print(key)
+        rkb = DES.first_perm(key)
         decrypted = True
+        # start timer
+        tic = time.perf_counter()
+        print(type(rkb))
+        print(rkb)
         rkb_rev = rkb[::-1]
-        rk_rev = rk[::-1]
         text = ""
-        block_num = 0
         for block in cipher_text_blocks:
-            block_num = block_num + 1
-            text = text + DES.bin2hex(DES.encrypt(block, rkb_rev, rk_rev, block_num))
+            text = text + DES.bin2hex(DES.encrypt(block, rkb_rev))
 
         orig_text = DES.hex2text(text)
+
+        # end timer
+        toc = time.perf_counter()
+        print(f"Decrypted the message in {toc - tic:0.4f} seconds")
 
     return render_template('DES-decrypt.html', cipher_text = cipher_text, orig_text = orig_text, decrypted = decrypted)
 
@@ -92,13 +108,16 @@ def encrypt_md5():
     # Get plain text from the box
     if request.method == 'POST':
         plain_text = request.form['message']
-        if not plain_text:
-            flash('Type a message to encrypt')
-        else:
-            pt = bytes(plain_text, 'utf-8')
-            digital_signature = md5.md5_to_hex(md5.md5(pt))
+        # start timer
+        tic = time.perf_counter()
+        pt = bytes(plain_text, 'utf-8')
+        digital_signature = md5.md5_to_hex(md5.md5(pt))
 
-        return redirect(url_for('decrypt_md5'))
+        # end timer
+        toc = time.perf_counter()
+        print(f"Encrypted the message in {toc - tic:0.4f} seconds")
+
+    return redirect(url_for('decrypt_md5'))
 
     return render_template('md5-encrypt.html')
 
@@ -115,11 +134,12 @@ def decrypt_md5():
     if request.method == 'POST':
         verify = True
         plain_text2 = request.form['message']
-        if not plain_text2:
-            flash('Type a message to encrypt')
-        else:
-            pt = bytes(plain_text2, 'utf-8')
-            digital_signature2 = md5.md5_to_hex(md5.md5(pt))
+        pt = bytes(plain_text2, 'utf-8')
+        digital_signature2 = md5.md5_to_hex(md5.md5(pt))
+
+        # end timer
+        toc = time.perf_counter()
+        print(f"Decrypted the message in {toc - tic:0.4f} seconds")
 
 
     return render_template('md5-decrypt.html', digital_signature = digital_signature, digital_signature2 = digital_signature2, plain_text = plain_text, verify = verify )
@@ -158,7 +178,12 @@ def encryptmessage():
     global encryptionRedirected
     global encrypted
     encryptionRedirected = True
+    # start timer
+    tic = time.perf_counter()
     encrypted = encrypt(private, request.form.get("message"))
+    # end timer
+    toc = time.perf_counter()
+    print(f"Encrypted the message in {toc - tic:0.4f} seconds")
     return redirect(url_for("rsa"))
 
 # Runs when they click the decrypt button
@@ -166,7 +191,12 @@ def encryptmessage():
 def decryptmessage():
     global decryptionRedirected
     global decrypted
+    # start timer
+    tic = time.perf_counter()
     decrypted = decrypt(public, encrypted)
+    # end timer
+    toc = time.perf_counter()
+    print(f"Decrypted the message in {toc - tic:0.4f} seconds")
     decryptionRedirected = True
     return redirect(url_for("rsa"))
 
@@ -178,8 +208,14 @@ def vc_encrypt():
         message = request.form.get("message")
         messages.append(message)
         keyword = request.form.get("keyword")
+        # start timer
+        tic = time.perf_counter()
         currentKey = vigenereCipher.createKey(message, keyword)
         encryptedMessage = vigenereCipher.encrypt(message, currentKey)
+
+        # end timer
+        toc = time.perf_counter()
+        print(f"Encrypted the message in {toc - tic:0.4f} seconds")
       #  return vigenereCipher.encrypt(message, vigenereCipher.createKey(message, keyword))
     return render_template('vigCipherEncrypt.html', msg=encryptedMessage, key=currentKey)
 
@@ -191,8 +227,14 @@ def vc_decrypt():
         encryptedMessage = request.form.get("message")
         originalMessage = messages[-1]
         keyword = request.form.get("keyword")
+        # start timer
+        tic = time.perf_counter()
         key =  vigenereCipher.createKey(originalMessage, keyword)
         decryptedMessage = vigenereCipher.decrypt(encryptedMessage, key)
+
+        # end timer
+        toc = time.perf_counter()
+        print(f"Decrypted the message in {toc - tic:0.4f} seconds")
     return render_template('vigCipherDecrypt.html', decryptMsg=decryptedMessage)
 
 

@@ -7,6 +7,16 @@
     left: 500px;
     }
 
+     .boxed {
+   width: 250px;
+   height: 50px;
+  border: 1px solid black;
+  display: inline-block;
+  text-align: center;
+  margin-left: 110px;
+  word-wrap: break-word;
+}
+
     .encryptButtnStyle{
     border: none;
     padding: 10px 20px;
@@ -22,8 +32,14 @@
   <body>
   {% block content %}
   <button type="button" onclick="window.location.href='{{ url_for( 'home' ) }}';">back</button>
+
   <h1> DES Encryption </h1>
+      <h3> Secret Key: </h3>
+  <div class="boxed">
+       <label>{{key}} </label>
+    </div>
       <form method="post">
+          <br>
       <label class="textboxStyle"> Enter the message you want to encrypt: </label>
       <br>
         <textarea class="textboxStyle" name="message"
@@ -35,6 +51,8 @@
         <br>
         <button class="encryptButtnStyle" type="submit" id="encrypt" name="Encrypt" value="Encrypt">ENCRYPT</button>
       </form>
+
+
   {% endblock %}
 
 
