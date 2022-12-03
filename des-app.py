@@ -117,7 +117,7 @@ def encrypt_md5():
         # start timer
         tic = time.perf_counter()
         pt = bytes(plain_text, 'utf-8')
-        digital_signature = md5.md5_to_hex(md5.md5(pt))
+        digital_signature = md5.to_hex(md5.encrypt(pt))
 
         # end timer
         toc = time.perf_counter()
@@ -142,7 +142,7 @@ def decrypt_md5():
         plain_text2 = request.form['message']
         tic = time.perf_counter()
         pt = bytes(plain_text2, 'utf-8')
-        digital_signature2 = md5.md5_to_hex(md5.md5(pt))
+        digital_signature2 = md5.to_hex(md5.encrypt(pt))
 
         # end timer
         toc = time.perf_counter()
