@@ -45,6 +45,10 @@
           <button class="decryptButtnStyle" type="submit" id="decrypt" name="Decrypt" value="Decrypt">DECRYPT</button>
       </form>
 
+      {% if alert %}
+  <label> Invalid secret key. Try again.</label>
+  {% endif %}
+
     {% if decrypted %}
         <h2> Decrypted message: </h2>
   <div class="boxed">

@@ -83,16 +83,22 @@ def decrypt_des():
 
     if request.method == 'POST':
         key = request.form['key']
-        rkb = DES.first_perm(key)
-        decrypted = True
-        # start timer
-        tic = time.perf_counter()
-        rkb_rev = rkb[::-1]
-        text = ""
-        for block in cipher_text_blocks:
-            text = text + DES.bin2hex(DES.encrypt(block, rkb_rev))
+        try:
+            rkb = DES.first_perm(key)
+            decrypted = True
+            # start timer
+            tic = time.perf_counter()
+            rkb_rev = rkb[::-1]
+            text = ""
+            for block in cipher_text_blocks:
+                text = text + DES.bin2hex(DES.encrypt(block, rkb_rev))
 
-        orig_text = DES.hex2text(text)
+            orig_text = DES.hex2text(text)
+        except:
+            alert = True
+            decrypted = False
+            return render_template('DES-decrypt.html', cipher_text=cipher_text, orig_text=orig_text,
+                                   decrypted=decrypted, alert = alert)
 
         # end timer
         toc = time.perf_counter()

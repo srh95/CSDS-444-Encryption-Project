@@ -4,7 +4,6 @@ import random
 def bin2dec(binary):
     decimal = 0
     i = 0
-    n = 0
     while binary != 0:
         dec = binary % 10
         decimal = decimal + dec * pow(2, i)
@@ -15,18 +14,17 @@ def bin2dec(binary):
 
 # Helper method to convert decimal to binary
 def dec2bin(num):
-    res = bin(num).replace("0b", "")
-    if (len(res) % 4 != 0):
-        div = len(res) / 4
-        div = int(div)
-        counter = (4 * (div + 1)) - len(res)
+    result = bin(num).replace("0b", "")
+    if (len(result) % 4 != 0):
+        div = int(len(result) / 4)
+        counter = (4 * (div + 1)) - len(result)
         for i in range(0, counter):
-            res = '0' + res
-    return res
+            result = '0' + result
+    return result
 
 
 # Helper method to convert hexadecimal to binary
-def hex2bin(s):
+def hex2bin(num):
     mp = {'0': "0000",
           '1': "0001",
           '2': "0010",
@@ -43,14 +41,14 @@ def hex2bin(s):
           'D': "1101",
           'E': "1110",
           'F': "1111"}
-    bin = ""
-    for i in range(len(s)):
-        bin = bin + mp[s[i]]
-    return bin
+    binary = ""
+    for i in range(len(num)):
+        binary = binary + mp[num[i]]
+    return binary
 
 
 # Helper method to convert binary to hexadecimal
-def bin2hex(s):
+def bin2hex(num):
     mp = {"0000": '0',
           "0001": '1',
           "0010": '2',
@@ -67,16 +65,13 @@ def bin2hex(s):
           "1101": 'D',
           "1110": 'E',
           "1111": 'F'}
-    hex = ""
-    for i in range(0, len(s), 4):
+    hex_ans = ""
+    for i in range(0, len(num), 4):
         ch = ""
-        ch = ch + s[i]
-        ch = ch + s[i + 1]
-        ch = ch + s[i + 2]
-        ch = ch + s[i + 3]
-        hex = hex + mp[ch]
+        ch = ch + num[i] + num[i + 1] + num[i + 2] + num[i + 3]
+        hex_ans = hex_ans + mp[ch]
 
-    return hex
+    return hex_ans
 
 
 # Permute function to rearrange the bits
@@ -101,7 +96,7 @@ def shift_left(k, num_shifts):
 
 
 # Helper method to calculate the xor of two strings of binary number a and b
-def xor(num1, num2):
+def calc_xor(num1, num2):
     result = ""
     for i in range(len(num1)):
         if num1[i] != num2[i]:
@@ -110,7 +105,7 @@ def xor(num1, num2):
             result = result + "0"
     return result
 
-# The following tables are used in the encryption function 
+# The following tables are used in the encryption function
 
 # Initial Permutation Table
 initial_perm = [58, 50, 42, 34, 26, 18, 10, 2,
@@ -193,12 +188,12 @@ final_perm = [40, 8, 48, 16, 56, 24, 64, 32,
 
 
 # Performs encryption
-def encrypt(pt, key):
+def encrypt(plaintext, key):
     # convert plaintext to binary
-    pt = hex2bin(pt)
+    plaintext = hex2bin(plaintext)
 
     # perform initial Permutation
-    initial_pt = permute(pt, initial_perm, 64)
+    initial_pt = permute(plaintext, initial_perm, 64)
 
     # Splitting the permuted plaintext into two halves
     left = initial_pt[0:32]
@@ -210,22 +205,22 @@ def encrypt(pt, key):
         right_expanded = permute(right, exp_d, 48)
 
         # Perform XOR with RPT and round key
-        xor_x = xor(right_expanded, key[i])
+        xor_rpt_rk = calc_xor(right_expanded, key[i])
 
         # S-box permutation: substitute the value from s-box table by calculating row and column
-        sbox_str = ""
+        sbox_sub = ""
         for j in range(0, 8):
-            row = bin2dec(int(xor_x[j * 6] + xor_x[j * 6 + 5]))
+            row = bin2dec(int(xor_rpt_rk[j * 6] + xor_rpt_rk[j * 6 + 5]))
             col = bin2dec(
-                int(xor_x[j * 6 + 1] + xor_x[j * 6 + 2] + xor_x[j * 6 + 3] + xor_x[j * 6 + 4]))
+                int(xor_rpt_rk[j * 6 + 1] + xor_rpt_rk[j * 6 + 2] + xor_rpt_rk[j * 6 + 3] + xor_rpt_rk[j * 6 + 4]))
             val = sbox[j][row][col]
-            sbox_str = sbox_str + dec2bin(val)
+            sbox_sub = sbox_sub + dec2bin(val)
 
         # Straight D-box: After substituting rearranging the bits
-        sbox_str = permute(sbox_str, per, 32)
+        sbox_str = permute(sbox_sub, per, 32)
 
         # XOR left and sbox_str
-        result = xor(left, sbox_str)
+        result = calc_xor(left, sbox_str)
         left = result
 
         # If it's not the last round swap the RPT and LPT
